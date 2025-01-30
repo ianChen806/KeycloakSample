@@ -1,13 +1,24 @@
 using System.Security.Claims;
 using KeycloakSample;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGenWithAuth(builder.Configuration);
 
-builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(r =>
+    {
+        r.RequireHttpsMetadata = false;
+        r.Audience = builder.Configuration["Authentication:Audience"];
+        r.MetadataAddress = builder.Configuration["Authentication:MetadataAddress"]!;
+        r.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            ValidIssuer = builder.Configuration["Authentication:ValidIssuer"],
+        };
+    });
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

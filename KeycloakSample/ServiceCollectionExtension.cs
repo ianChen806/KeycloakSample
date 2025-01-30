@@ -9,37 +9,28 @@ public static class ServiceCollectionExtension
         services.AddSwaggerGen(r =>
         {
             r.CustomSchemaIds(s => s.FullName!.Replace('+', '-'));
-            r.AddSecurityDefinition("Keycloak", new OpenApiSecurityScheme()
+            r.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                Type = SecuritySchemeType.OAuth2,
-                Flows = new OpenApiOAuthFlows()
-                {
-                    Implicit = new OpenApiOAuthFlow()
-                    {
-                        AuthorizationUrl = new Uri(configuration["Keycloak:AuthorizationUrl"]!),
-                        Scopes = new Dictionary<string, string>()
-                        {
-                            { "openid", "openid" },
-                            { "profile", "profile" },
-                        }
-                    }
-                }
+                Name = "Authorization",
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "use api `Account/Login` get api token. value pattern: `Bearer {apiToken}`",
             });
+
             r.AddSecurityRequirement(new OpenApiSecurityRequirement()
             {
                 {
-                    new OpenApiSecurityScheme()
+                    new OpenApiSecurityScheme
                     {
-                        Reference = new OpenApiReference()
+                        Reference = new OpenApiReference
                         {
-                            Id = "Keycloak",
-                            Type = ReferenceType.SecurityScheme
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
                         },
-                        In = ParameterLocation.Header,
-                        Name = "Bearer",
-                        Scheme = "Bearer"
                     },
-                    []
+                    new List<string>()
                 }
             });
         });

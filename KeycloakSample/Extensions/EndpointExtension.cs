@@ -16,14 +16,16 @@ public static class EndpointExtension
 
     private static void Auth(RouteGroupBuilder group)
     {
-        group.MapPost("/", ([FromServices] IConfiguration configuration) =>
+        group.MapPost("/", (
+                [FromServices] IConfiguration configuration,
+                [FromServices] IHttpContextAccessor httpContext) =>
             {
                 var authUrl = configuration["Keycloak:AuthorizationUrl"]!;
                 var url = authUrl.SetQueryParams(new
                 {
                     client_id = configuration["Keycloak:ClientId"],
                     response_type = "code",
-                    redirect_uri = CallbackUrl(configuration),
+                    redirect_uri = CallbackUrl(httpContext),
                     scope = "openid",
                     state = Guid.NewGuid().ToString("n")
                 });
@@ -32,9 +34,15 @@ public static class EndpointExtension
             .WithSummary("1. 產生auth url, 使用者登入成功後 keycloak 會重新導向到 redirect uri(callback)");
     }
 
-    private static string CallbackUrl(IConfiguration configuration)
+    private static string AppUrl(IHttpContextAccessor httpContext)
     {
-        return configuration["AppUrl"]!.AppendPathSegments("auth", "callback").ToString();
+        var request = httpContext.HttpContext!.Request;
+        return $"{request.Scheme}://{request.Host}";
+    }
+
+    private static string CallbackUrl(IHttpContextAccessor httpContext)
+    {
+        return AppUrl(httpContext).AppendPathSegments("auth", "callback").ToString();
     }
 
     private static void Callback(RouteGroupBuilder group)
@@ -52,7 +60,10 @@ public static class EndpointExtension
 
     private static void GetToken(RouteGroupBuilder group)
     {
-        group.MapGet("/token", async (string code, [FromServices] IConfiguration configuration) =>
+        group.MapGet("/token", async (
+                string code,
+                [FromServices] IConfiguration configuration,
+                [FromServices] IHttpContextAccessor httpContext) =>
             {
                 using var client = new HttpClient();
                 var realm = configuration["Keycloak:Realm"]!;
@@ -61,7 +72,7 @@ public static class EndpointExtension
                 {
                     { "grant_type", "authorization_code" },
                     { "code", code },
-                    { "redirect_uri", CallbackUrl(configuration) },
+                    { "redirect_uri", CallbackUrl(httpContext) },
                     { "client_id", "MyClient" },
                 }));
                 return await response.Content.ReadAsStringAsync();

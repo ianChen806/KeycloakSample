@@ -28,7 +28,7 @@ public static class EndpointExtension
                 });
                 return url.ToString();
             })
-            .WithSummary("1. 產生auth url, 使用者登入成功後 keycloak 會呼叫 callback");
+            .WithSummary("1. 產生auth url, 使用者登入成功後 keycloak 會重新導向到 redirect uri(callback)");
     }
 
     private static string CallbackUrl(IConfiguration configuration)

@@ -11,6 +11,7 @@ public static class EndpointExtension
         Auth(group);
         Callback(group);
         GetToken(group);
+        Refresh(group);
     }
 
     private static void Auth(RouteGroupBuilder group)
@@ -66,6 +67,24 @@ public static class EndpointExtension
                 return await response.Content.ReadAsStringAsync();
             })
             .WithSummary("3. 使用callback返回的code 取得 token, code的有效期限30~60秒, 返回access_token和refresh_token");
+    }
+
+    private static void Refresh(RouteGroupBuilder group)
+    {
+        group.MapGet("/refresh", async (string refreshToken, [FromServices] IConfiguration configuration) =>
+            {
+                using var client = new HttpClient();
+                var realm = configuration["Keycloak:Realm"]!;
+                var tokenUrl = configuration["Keycloak:Url"]!.AppendPathSegments("realms", realm, "protocol", "openid-connect", "token")!;
+                var response = await client.PostAsync(tokenUrl, new FormUrlEncodedContent(new Dictionary<string, string>
+                {
+                    { "grant_type", "refresh_token" },
+                    { "refresh_token", refreshToken },
+                    { "client_id", "MyClient" },
+                }));
+                return await response.Content.ReadAsStringAsync();
+            })
+            .WithSummary("x. 拿 RefreshToken 取得新的 token");
     }
 
     public class CallbackDto

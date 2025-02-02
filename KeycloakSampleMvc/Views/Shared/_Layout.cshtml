@@ -1,20 +1,21 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8" />
-	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	<meta charset="utf-8"/>
+	<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 	<title>@ViewData["Title"] - KeycloakSampleMvc</title>
-	<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
-	<link asp-append-version="true" href="~/css/site.css" rel="stylesheet" />
-	<link asp-append-version="true" href="~/KeycloakSampleMvc.styles.css" rel="stylesheet" />
+	<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"/>
+	<link asp-append-version="true" href="~/css/site.css" rel="stylesheet"/>
+	<link asp-append-version="true" href="~/KeycloakSampleMvc.styles.css" rel="stylesheet"/>
 </head>
 <body>
 <header>
 	<nav class="bg-white border-bottom box-shadow mb-3 navbar navbar-expand-sm navbar-light navbar-toggleable-sm">
 		<div class="container-fluid">
 			<a asp-action="Index" asp-area="" asp-controller="Home" class="navbar-brand">KeycloakSampleMvc</a>
-			<button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target=".navbar-collapse"
-				data-bs-toggle="collapse" type="button">
+			<button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+			        class="navbar-toggler" data-bs-target=".navbar-collapse"
+			        data-bs-toggle="collapse" type="button">
 				<span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse d-sm-inline-flex justify-content-between navbar-collapse">
@@ -23,7 +24,13 @@
 						<a asp-action="Index" asp-area="" asp-controller="Home" class="nav-link text-dark">Home</a>
 					</li>
 					<li class="nav-item">
-						<a asp-action="Privacy" asp-area="" asp-controller="Home" class="nav-link text-dark">Privacy</a>
+						<a asp-action="Profile" asp-area="" asp-controller="Home" class="nav-link text-dark">Profile</a>
+					</li>
+					<li class="nav-item">
+						<a asp-action="Login" asp-area="" asp-controller="Home" class="nav-link text-dark">Login</a>
+					</li>
+					<li class="nav-item">
+						<a asp-action="Logout" asp-area="" asp-controller="Home" class="nav-link text-dark">Logout</a>
 					</li>
 				</ul>
 			</div>
@@ -39,7 +46,7 @@
 <footer class="border-top footer text-muted">
 	<div class="container">
 		&copy; 2025 - KeycloakSampleMvc -
-		<a asp-action="Privacy" asp-area="" asp-controller="Home">Privacy</a>
+		<a asp-action="Profile" asp-area="" asp-controller="Home">Privacy</a>
 	</div>
 </footer>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>

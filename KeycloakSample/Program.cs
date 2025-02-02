@@ -1,14 +1,13 @@
 using System.Security.Claims;
-using KeycloakSample.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGenWithAuth(builder.Configuration);
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthorization();
-builder.Services.AddAuthenticationWithJwt(builder.Configuration);
+builder.Services.AddAuthentication();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
@@ -20,7 +19,6 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.AddAuthEndpoints();
 app.MapGet("me", (ClaimsPrincipal user) =>
     {
         return user.Claims.ToDictionary(c => c.Type, c => c.Value);
